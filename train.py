@@ -1,7 +1,6 @@
 import torch.nn as nn
 from ResNetSA import get_model
 from GCN.GCN import TwoLayerGCN,build_topk_adj,build_topk_adj_gat,GAN
-#from MVv2 import get_mvmodel
 from torch.utils.data import Dataset, DataLoader,ConcatDataset
 import itertools
 import importlib
@@ -249,8 +248,8 @@ def main(args):
             # 前向传播
             #logits = model(image_x_v1, out_type='ce') 
             top_k = min(live_n, spoof_n,args.top_k)
-            A_hat = build_topk_adj(feat1,top_k)
-            _,logits = gcn(feat1, A_hat)  # [B, 2]
+            A_hat = build_topk_adj(feat,top_k)
+            _,logits = gcn(feat, A_hat)  # [B, 2]
             
             #adj = build_topk_adj_gat(feat1,top_k)
             #logits = gan(feat1, adj)     # [B, 2]
@@ -266,7 +265,7 @@ def main(args):
                 feat_loss = torch.zeros(1).cuda()    
             #'''
             # 节点级分类
-            #loss_all = F.cross_entropy(logits, label)  # label ∈ [B]    
+            #loss_all = F.cross_entropy(logits, label2)  # label ∈ [B]    
             #in_channels = patch_feat.shape[1]
             #'''
             patch_loss_fn = GraphSpectralConsistencyLoss(in_channels=256, proj_dim=64).cuda()
